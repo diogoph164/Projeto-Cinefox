@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cinefox - Plataforma de avaliação cinematográfica">
+    <title>Cinefox | Filmes e Séries</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="header">
+        <a href="#" class="logo">
+            <span class="logo-icon">🎬</span>
+            <span>Cine<span>fox</span></span>
+        </a>
+
+        <nav class="nav">
+            <a href="#filmes">Filmes</a>
+            <a href="#filmes-alta">Filmes em Alta</a>
+            <a href="#series-alta">Séries em Alta</a>
+        </nav>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Pesquisar filmes ou séries...">
+            <button id="searchBtn" aria-label="Pesquisar">🔍</button>
+        </div>
+
+        <div class="account-area">
+            <span id="userStatus"></span>
+            <button class="login-header-btn" id="loginHeaderBtn">Entrar</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <p class="tag">CINEFOX</p>
+                <h1>Descubra seu próximo filme favorito.</h1>
+                <p>
+                    Explore filmes e séries, veja avaliações e descubra
+                    o que a comunidade está assistindo.
+                </p>
+                <a href="#filmes" class="hero-btn">Explorar filmes</a>
+            </div>
+        </section>
+
+        <section class="section" id="filmes">
+            <div class="section-header">
+                <div>
+                    <p class="section-label">EM DESTAQUE</p>
+                    <h2>Filmes do momento</h2>
+                </div>
+            </div>
+
+            <div class="movie-grid" id="movieGrid"></div>
+            <p class="empty-message" id="emptyMessage">Nenhum título encontrado.</p>
+        </section>
+
+        <section class="section" id="filmes-alta">
+            <div class="section-header">
+                <div>
+                    <p class="section-label">TENDÊNCIAS</p>
+                    <h2>🔥 Filmes em Alta</h2>
+                </div>
+
+                <div class="carousel-buttons">
+                    <button id="moviesPrevBtn" aria-label="Filmes anteriores">←</button>
+                    <button id="moviesNextBtn" aria-label="Próximos filmes">→</button>
+                </div>
+            </div>
+
+            <div class="carousel">
+                <div class="carousel-track" id="moviesTrack"></div>
+            </div>
+        </section>
+
+        <section class="section" id="series-alta">
+            <div class="section-header">
+                <div>
+                    <p class="section-label">TENDÊNCIAS</p>
+                    <h2>📺 Séries em Alta</h2>
+                </div>
+
+                <div class="carousel-buttons">
+                    <button id="seriesPrevBtn" aria-label="Séries anteriores">←</button>
+                    <button id="seriesNextBtn" aria-label="Próximas séries">→</button>
+                </div>
+            </div>
+
+            <div class="carousel">
+                <div class="carousel-track" id="seriesTrack"></div>
+            </div>
+        </section>
+
+
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer-logo">
+            <span class="logo-icon">🎬</span>
+            <strong>Cinefox</strong>
+        </div>
+
+        <p>Plataforma acadêmica de avaliação cinematográfica.</p>
+
+        <div class="creators">
+            Desenvolvido por <strong>Walter, Diogo e Felipe</strong>
+        </div>
+
+        <p class="copyright">© 2026 Cinefox. Projeto acadêmico.</p>
+    </footer>
+
+    <!-- Modal do filme -->
+    <div class="modal hidden" id="movieModal">
+        <div class="modal-content movie-modal-content">
+            <button class="modal-close" id="modalClose">×</button>
+            <div id="modalBody"></div>
+
+            <hr class="modal-divider">
+
+            <section class="comments-section">
+                <div class="comments-header">
+                    <div>
+                        <p class="section-label">COMUNIDADE</p>
+                        <h3>Comentários</h3>
+                    </div>
+                    <span id="commentCount">0 comentários</span>
+                </div>
+
+                <div id="commentsList" class="comments-list"></div>
+
+                <div class="comment-form">
+                    <h4>Deixe sua opinião</h4>
+
+                    <div id="loginRequired" class="login-required hidden">
+                        <p>Você precisa estar logado para comentar e avaliar.</p>
+                        <button id="loginFromComment">Entrar / Criar conta</button>
+                    </div>
+
+                    <div id="commentFields">
+                        <div class="star-rating" id="starRating" aria-label="Escolha sua nota">
+                            <button type="button" data-rating="1">★</button>
+                            <button type="button" data-rating="2">★</button>
+                            <button type="button" data-rating="3">★</button>
+                            <button type="button" data-rating="4">★</button>
+                            <button type="button" data-rating="5">★</button>
+                        </div>
+
+                        <textarea id="commentInput" rows="4"
+                            placeholder="Escreva o que achou deste filme..."></textarea>
+
+                        <button class="submit-comment" id="submitComment">
+                            Publicar comentário
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Modal de login/cadastro -->
+    <div class="modal hidden" id="authModal">
+        <div class="modal-content auth-modal">
+            <button class="modal-close" id="authClose">×</button>
+
+            <p class="section-label">CINEFOX</p>
+            <h2 id="authTitle">Entrar</h2>
+            <p class="auth-subtitle">Entre para avaliar filmes e participar dos comentários.</p>
+
+            <form id="authForm">
+                <label for="authName" id="nameLabel" class="hidden">Nome</label>
+                <input type="text" id="authName" class="auth-input hidden" placeholder="Seu nome">
+
+                <label for="authEmail">E-mail</label>
+                <input type="email" id="authEmail" class="auth-input" placeholder="seu@email.com" required>
+
+                <label for="authPassword">Senha</label>
+                <input type="password" id="authPassword" class="auth-input" placeholder="Sua senha" required>
+
+                <button type="submit" class="auth-submit" id="authSubmit">Entrar</button>
+            </form>
+
+            <p id="authMessage" class="auth-message"></p>
+
+            <button class="auth-switch" id="authSwitch">
+                Ainda não tenho conta
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
