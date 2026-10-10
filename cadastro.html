@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cadastre filmes e séries no Cinefox">
+    <title>Cadastrar obra | Cinefox</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .registration-page { width: min(760px, 90%); margin: 48px auto 70px; }
+        .registration-top { margin-bottom: 26px; }
+        .registration-top h1 { margin: 8px 0; font-size: clamp(2rem, 5vw, 3rem); }
+        .registration-top p:last-child { color: var(--muted); }
+        .registration-form { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: clamp(20px, 4vw, 36px); box-shadow: var(--shadow); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .field { display: flex; flex-direction: column; gap: 7px; }
+        .field.full { grid-column: 1 / -1; }
+        .field label { font-weight: 700; font-size: .92rem; }
+        .field input, .field select, .field textarea { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 12px 13px; background: #fff; color: var(--text); font: inherit; outline: none; }
+        .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,120,91,.12); }
+        .field textarea { min-height: 125px; resize: vertical; }
+        .form-help { color: var(--muted); font-size: .82rem; }
+        .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 24px; }
+        .primary-action, .secondary-action { display: inline-flex; justify-content: center; align-items: center; border: 0; border-radius: 9px; padding: 12px 18px; font: inherit; font-weight: 700; cursor: pointer; text-decoration: none; }
+        .primary-action { background: var(--accent); color: white; }
+        .primary-action:hover { background: var(--accent-dark); }
+        .secondary-action { background: var(--surface-2); color: var(--text); }
+        .form-message { min-height: 24px; margin-top: 15px; font-weight: 700; color: #28784a; }
+        .register-work-link { color: var(--accent-dark) !important; font-weight: 700; }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .field.full { grid-column: auto; } .registration-page { margin-top: 30px; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo"><span class="logo-icon">🎬</span><span>Cine<span>fox</span></span></a>
+        <nav class="nav"><a href="index.html#filmes">Filmes</a><a href="index.html#filmes-alta">Filmes em Alta</a><a href="index.html#series-alta">Séries em Alta</a></nav>
+        <div class="account-area"><a class="secondary-action" href="index.html">← Voltar ao Cinefox</a></div>
+    </header>
+
+    <main class="registration-page">
+        <div class="registration-top">
+            <p class="section-label">CINEFOX • ÁREA DE CADASTRO</p>
+            <h1>Cadastre seu filme ou série</h1>
+            <p>Preencha os dados abaixo. Depois de salvar, a obra será exibida na seção correspondente da página inicial.</p>
+        </div>
+
+        <form id="workForm" class="registration-form">
+            <div class="form-grid">
+                <div class="field">
+                    <label for="workType">Tipo de obra *</label>
+                    <select id="workType" name="type" required>
+                        <option value="movie">Filme</option>
+                        <option value="series">Série</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="workTitle">Título *</label>
+                    <input id="workTitle" name="title" type="text" maxlength="100" placeholder="Nome do filme ou série" required>
+                </div>
+                <div class="field">
+                    <label for="workYear">Ano de lançamento *</label>
+                    <input id="workYear" name="year" type="number" min="1888" max="2100" value="2026" required>
+                </div>
+                <div class="field">
+                    <label for="workGenre">Gênero *</label>
+                    <select id="workGenre" name="genre" required>
+                        <option value="Ação">Ação</option><option value="Animação">Animação</option><option value="Aventura">Aventura</option><option value="Comédia">Comédia</option><option value="Documentário">Documentário</option><option value="Drama">Drama</option><option value="Fantasia">Fantasia</option><option value="Ficção científica">Ficção científica</option><option value="Romance">Romance</option><option value="Suspense">Suspense</option><option value="Terror">Terror</option><option value="Outro">Outro</option>
+                    </select>
+                </div>
+                <div class="field full">
+                    <label for="workDescription">Sinopse *</label>
+                    <textarea id="workDescription" name="description" maxlength="2000" placeholder="Conte do que trata a obra..." required></textarea>
+                </div>
+                <div class="field full">
+                    <label for="workImage">Link da imagem / pôster (opcional)</label>
+                    <input id="workImage" name="image" type="url" placeholder="https://exemplo.com/poster.jpg">
+                    <span class="form-help">Use um endereço de imagem público que comece com https:// ou http://.</span>
+                </div>
+                <div class="field">
+                    <label for="workDirector">Diretor(a) / criador(a) (opcional)</label>
+                    <input id="workDirector" name="director" type="text" maxlength="100" placeholder="Nome do responsável">
+                </div>
+                <div class="field">
+                    <label for="workRating">Nota inicial (0 a 10)</label>
+                    <input id="workRating" name="rating" type="number" min="0" max="10" step="0.1" value="0">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="primary-action" type="submit">Salvar obra</button>
+                <a class="secondary-action" href="index.html">Cancelar</a>
+            </div>
+            <p id="formMessage" class="form-message" role="status" aria-live="polite"></p>
+        </form>
+    </main>
+
+    <footer class="footer"><div class="footer-logo"><span class="logo-icon">🎬</span><strong>Cinefox</strong></div><p>Plataforma acadêmica de avaliação cinematográfica.</p><p class="copyright">© 2026 Cinefox. Projeto acadêmico.</p></footer>
+    <script src="cadastro.js"></script>
+</body>
+</html>

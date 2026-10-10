@@ -821,3 +821,10 @@ a {
         align-items: stretch;
     }
 }
+
+/* Link para cadastro de filmes e séries */
+.register-work-link {
+    color: var(--accent-dark) !important;
+    font-weight: 700;
+    white-space: nowrap;
+}

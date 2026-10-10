@@ -65,6 +65,29 @@ const series = [
     }
 ];
 
+// Dá identificadores às séries para que comentários e avaliações funcionem nelas também.
+series.forEach((serie, index) => {
+    serie.id = 100 + index;
+    serie.year = 2026;
+    serie.description = serie.description || `Conheça a história de ${serie.title}, uma série de ${serie.genre.toLowerCase()}.`;
+});
+
+// Carrega as obras cadastradas na página própria. O localStorage compartilha os dados
+// entre as páginas quando o projeto é aberto pela mesma origem (por exemplo, Live Server).
+let submittedWorks = [];
+try {
+    submittedWorks = JSON.parse(localStorage.getItem("cinefoxSubmittedWorks") || "[]");
+} catch (error) {
+    console.warn("Não foi possível ler as obras salvas do Cinefox.", error);
+}
+submittedWorks.forEach(work => {
+    if (work.type === "series") {
+        if (!series.some(item => item.id === work.id)) series.push(work);
+    } else {
+        if (!movies.some(item => item.id === work.id)) movies.push(work);
+    }
+});
+
 // ==============================
 // ELEMENTOS DO HTML
 // ==============================
@@ -125,16 +148,22 @@ const carouselState = {
 
 const trendingMovies = [...movies];
 
-const trendingSeries = [...series, 
+const trendingSeries = [...series,
     {
+        id: 200,
         title: "Código 404",
+        year: 2026,
         genre: "Ficção",
-        rating: 8.1
+        rating: 8.1,
+        description: "Uma investigação tecnológica revela um mistério inesperado."
     },
     {
+        id: 201,
         title: "O Último Sinal",
+        year: 2026,
         genre: "Drama",
-        rating: 8.0
+        rating: 8.0,
+        description: "Uma mensagem inesperada muda o rumo da vida dos personagens."
     }
 ];
 
@@ -285,15 +314,15 @@ function renderMovies(list) {
         card.classList.add("movie-card");
 
         card.innerHTML = `
-            <div class="poster poster-${(index % 4) + 1}">
-                <span class="poster-title">${movie.title}</span>
+            <div class="poster poster-${(index % 4) + 1}" ${movie.image ? `style="background-image: linear-gradient(0deg, rgba(0,0,0,.58), rgba(0,0,0,.05)), url('${escapeHTML(movie.image)}'); background-size: cover; background-position: center;"` : ""}>
+                <span class="poster-title">${escapeHTML(movie.title)}</span>
             </div>
 
             <div class="card-info">
-                <h3>${movie.title}</h3>
+                <h3>${escapeHTML(movie.title)}</h3>
 
                 <div class="card-meta">
-                    <span>${movie.year} • ${movie.genre}</span>
+                    <span>${escapeHTML(String(movie.year))} • ${escapeHTML(movie.genre)}</span>
                     <span class="rating">★ ${getMovieRating(movie.id, movie.rating)}</span>
                 </div>
 
@@ -376,7 +405,7 @@ function toggleFavorite(movieId, button) {
 }
 
 // ==============================
-// MODAL DO FILME
+// MODELO DO FILME
 // ==============================
 
 function openMovieModal(movie) {
@@ -384,13 +413,14 @@ function openMovieModal(movie) {
     selectedRating = 0;
 
     modalBody.innerHTML = `
-        <p class="section-label">${movie.genre}</p>
-        <h2>${movie.title}</h2>
-        <p><strong>Ano:</strong> ${movie.year}</p>
+        <p class="section-label">${escapeHTML(movie.genre || "Sem gênero")}</p>
+        <h2>${escapeHTML(movie.title)}</h2>
+        <p><strong>Ano:</strong> ${escapeHTML(String(movie.year || "Não informado"))}</p>
         <p><strong>Avaliação da comunidade:</strong>
             ⭐ ${getMovieRating(movie.id, movie.rating)}
         </p>
-        <p><strong>Sinopse:</strong> ${movie.description}</p>
+        <p><strong>Sinopse:</strong> ${escapeHTML(movie.description || "Sinopse não informada.")}</p>
+        ${movie.director ? `<p><strong>Direção/criação:</strong> ${escapeHTML(movie.director)}</p>` : ""}
     `;
 
     resetStars();
@@ -633,13 +663,13 @@ function renderTrendingMovies() {
         card.classList.add("trending-card");
 
         card.innerHTML = `
-            <div class="trending-poster">
+            <div class="trending-poster" ${movie.image ? `style="background-image: linear-gradient(0deg, rgba(0,0,0,.35), rgba(0,0,0,.05)), url('${escapeHTML(movie.image)}'); background-size: cover; background-position: center;"` : ""}>
                 <span class="trending-rank">#${index + 1}</span>
             </div>
 
             <div class="trending-info">
-                <h3>${movie.title}</h3>
-                <p>${movie.genre} • ⭐ ${getMovieRating(movie.id, movie.rating)}</p>
+                <h3>${escapeHTML(movie.title)}</h3>
+                <p>${escapeHTML(movie.genre)} • ⭐ ${getMovieRating(movie.id, movie.rating)}</p>
             </div>
         `;
 
@@ -670,10 +700,16 @@ function renderTrendingSeries() {
 
         card.innerHTML = `
             <span class="trending-rank">#${index + 1}</span>
-            <h3>${serie.title}</h3>
-            <p>${serie.genre} • ⭐ ${serie.rating}</p>
+            <h3>${escapeHTML(serie.title)}</h3>
+            <p>${escapeHTML(serie.genre)} • ⭐ ${getMovieRating(serie.id, serie.rating)}</p>
         `;
 
+        if (serie.image) {
+            card.style.backgroundImage = `linear-gradient(0deg, rgba(0,0,0,.65), rgba(0,0,0,.08)), url("${serie.image.replaceAll('"', '')}")`;
+            card.style.backgroundSize = "cover";
+            card.style.backgroundPosition = "center";
+        }
+        card.addEventListener("click", () => openMovieModal(serie));
         seriesTrack.appendChild(card);
     });
 
